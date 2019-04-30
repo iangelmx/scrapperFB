@@ -20,11 +20,29 @@ class Scrapper():
     __cPath= env['chromeLocation'] #La dirección donde está chromium
 
     mainPage= env['scrappingPage']
-    
-    def __init__(self,driver=None, cPath=None):  
-        self.__driver =driver
+
+    def __init__(self,driver=None, cPath=None, disableAlerts=False):  
+        if driver:
+            self.__driver =driver
+        else:
+            if disableAlerts == True:
+                chrome_options = webdriver.ChromeOptions()
+                prefs = {"profile.default_content_setting_values.notifications" : 2}
+                chrome_options.add_experimental_option("prefs",prefs)
+                self.__driver = webdriver.Chrome(self.__cPath,chrome_options=chrome_options)
+            else:
+                self.__driver = webdriver.Chrome(self.__cPath)
         if cPath: self.__cPath=cPath
-        self.__driver = webdriver.Chrome(self.__cPath)
+
+    def goToUrl(self, url):
+        try:
+            #Ir a la página a scrappear
+            if self.__driver.current_url != url:
+                self.__driver.get(url)
+                return {'success':True}
+            return True
+        except Exception as e:
+            return {'success':False, 'error':['Error al alcanzar url: '+str(e)]}
 
     def start(self):
         try:
@@ -70,3 +88,6 @@ class Scrapper():
                     time.sleep(0.1)
 
         return  {'hallado':False}
+    
+    def getDriver(self):
+        return self.__driver
