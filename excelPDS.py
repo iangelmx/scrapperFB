@@ -1,4 +1,4 @@
-from innovacionLibs.pydocsxl import DocumentoExcel
+from libs.pydocsxl import DocumentoExcel
 
 
 archivoExcel = DocumentoExcel("ejemplo3.xlsx")
